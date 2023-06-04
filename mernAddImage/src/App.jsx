@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import axios from "axios";
 const App = () => {
   const [user, setUser] = useState({
     name: "",
@@ -13,11 +14,15 @@ const App = () => {
     let name = e.target.name;
     let value = e.target.value;
     // todo is se hum us object ma us key ke against value store kar rhy ha
-    setUser({ ...user, [name]: value });
+    if (name == "image") {
+      setUser({ ...user, [name]: e.target.files[0] });
+    } else {
+      setUser({ ...user, [name]: value });
+    }
   };
 
   const fileUpload = (e) => {
-    console.log(e.target.files[0]);
+    //console.log(e.target.files[0]);
     setUser({ ...user, image: e.target.files[0] });
     console.log(user);
   };
@@ -25,37 +30,37 @@ const App = () => {
   const sendDataToBackend = async (e) => {
     //todo is se form reload ni hoga
     e.preventDefault();
-
-    const { name, email, phone, password, image } = user;
+    console.log(user);
+    // const { name, email, phone, password, image } = user;
 
     try {
-      //todo yaha pe hum ne data send kiya ha
+      const formData = new FormData();
+      formData.append("name", user.name);
+      formData.append("email", user.email);
+      formData.append("phone", user.phone);
+      formData.append("password", user.password);
+      formData.append("image", user.image);
+      const url = "http://localhost:8080/register";
       const res = await fetch("http://localhost:8080/register", {
         method: "POST",
         mode: "cors",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
+        // headers: {
+        //   "Access-Control-Allow-Origin": "*",
+        //   "Content-Type": "application/json",
+        // },
 
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          password,
-          image,
-        }),
+        body: formData,
       });
+      // let res = await axios.post(url, formData, { mode: "cors" });
       //todo yaha pe humin server se response aaa gaya ha
-      const data = await res.json();
 
-      if (res.status === 422 || !data) {
+      if (res.status === 422) {
         window.alert("Registration failed");
       } else {
         window.alert("Registration succesfull");
       }
     } catch (e) {
-      console.log("some error i am from catch block" + e);
+      console.log("some error i am from catch block", e);
     }
   };
 
@@ -112,9 +117,9 @@ const App = () => {
           {/* todo is ma hum ne value ni deni  */}
           <input
             type="file"
-            name="myfile"
+            name="image"
             className="w-full text-4xl font-bold"
-            onChange={fileUpload}
+            onChange={handleInputs}
           />
         </div>
         <div className="px-3 py-4">
