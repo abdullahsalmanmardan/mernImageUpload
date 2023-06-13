@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
 });
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `${process.cwd()}/Images`);
+    cb(null, `${process.cwd()}/public/Images`);
   },
   filename: function (req, file, cb) {
     // file ka name hum is tarha store karin gay

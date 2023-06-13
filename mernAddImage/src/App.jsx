@@ -51,8 +51,6 @@ const App = () => {
 
         body: formData,
       });
-      // let res = await axios.post(url, formData, { mode: "cors" });
-      //todo yaha pe humin server se response aaa gaya ha
 
       if (res.status === 422) {
         window.alert("Registration failed");
